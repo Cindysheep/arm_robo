@@ -29,3 +29,81 @@ colcon build
 source install/setup.bash
 ros2 launch Arm_urdf display.launch.py
 ```
+
+## USB Passthrough to WSL2 for Serial Devices
+
+#### 1. Install usbipd-win
+
+WSL2 cannot directly access USB devices by default. You must install: **[usbipd-win](https://github.com/dorssel/usbipd-win)**
+
+Open PowerShell as Administrator and run:
+
+```powershell
+winget install usbipd
+```
+
+Or download the installer manually from GitHub Releases.
+
+
+#### 2. Verify usbipd Installation
+
+Run the follow commandverify usbipd installation:
+
+```powershell
+usbipd --version
+```
+
+#### 3. List Available USB Devices
+
+Connect your FTServo USB adapter to the computer.
+
+Run:
+
+```powershell
+usbipd list
+```
+
+Example output:
+
+```text
+BUSID  VID:PID    DEVICE
+1-4    0403:6001 FT232 USB UART
+1-7    10c4:ea60 Silicon Labs CP210x USB to UART Bridge
+```
+
+#### 4. Attach the Device to WSL2
+
+First, bind the device, fpr example:
+
+```powershell
+usbipd bind --busid 1-4
+```
+
+Replace `1-4` with your actual BUSID. Then, attach the device to WSL2:
+
+```powershell
+usbipd attach --wsl --busid 1-4
+```
+
+If successful, the USB device is now available inside WSL2.
+
+
+#### 5. Verify Device in WSL2
+
+Open Ubuntu terminal:
+
+```bash
+ls /dev/ttyUSB*
+```
+
+or:
+
+```bash
+ls /dev/ttyACM*
+```
+
+Example output:
+
+```text
+/dev/ttyUSB0
+```
