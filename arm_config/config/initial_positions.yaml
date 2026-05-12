@@ -1,0 +1,10 @@
+# Default initial positions for Arm_urdf's ros2_control fake system
+
+initial_positions:
+  Joint_1: 3.14159
+  Joint_2: -0.1047
+  Joint_3: 0.0873
+  Joint_4: 0.2967
+  Joint_5: -0
+  Joint_6: 0
+  Joint_7: 0
