@@ -10,4 +10,9 @@ public:
         const std::string& joint_name,
         double rad
     );
+
+    static double pulseToRad(
+        const std::string& joint_name,
+        int pulse
+    );
 };

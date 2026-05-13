@@ -35,3 +35,27 @@ int ServoMapper::radToPulse(
 
     return pulse;
 }
+
+double ServoMapper::pulseToRad(
+    const std::string& joint_name,
+    int pulse)
+{
+    auto cfg = JOINT_MAP[joint_name];
+
+    // ===== limit =====
+    pulse = std::clamp(pulse, cfg.min_pulse, cfg.max_pulse);
+
+    // ===== pulse → rad'（带方向和offset的中间值） =====
+    double rad_signed =
+        (static_cast<double>(pulse) - 2048.0) * M_PI / 2048.0;
+
+    // ===== 反向方向变换 & 反向 offset =====
+    if (std::abs(cfg.direction) < 1e-9) {
+        // 防止除以 0，异常情况返回 0
+        return 0.0;
+    }
+    double rad = rad_signed / cfg.direction;
+    rad -= cfg.offset_rad;
+
+    return rad;
+}
