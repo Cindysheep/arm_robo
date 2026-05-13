@@ -11,15 +11,26 @@ find_package(rclcpp REQUIRED)
 find_package(moveit_msgs REQUIRED)
 find_package(trajectory_msgs REQUIRED)
 
+include_directories(
+  include
+  ../external/FTServo_Linux/src
+)
 add_executable(
   trajectory_bridge
   src/trajectory_bridge.cpp
+  src/servo_mapper.cpp
+  src/ftservo_driver.cpp
 )
 
 ament_target_dependencies(
   trajectory_bridge
   rclcpp
   moveit_msgs
+)
+
+target_link_libraries(
+  trajectory_bridge
+  ${CMAKE_CURRENT_SOURCE_DIR}/../external/FTServo_Linux/src/libSCServo.a
 )
 
 install(

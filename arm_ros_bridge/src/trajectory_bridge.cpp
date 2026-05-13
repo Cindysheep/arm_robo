@@ -2,6 +2,10 @@
 
 #include <moveit_msgs/msg/display_trajectory.hpp>
 
+#include "arm_ros_bridge/servo_mapper.hpp"
+#include "arm_ros_bridge/ftservo_driver.hpp"
+#include "arm_ros_bridge/joint_config.hpp"
+
 class TrajectoryBridge : public rclcpp::Node
 {
 public:
@@ -25,6 +29,21 @@ public:
             this->get_logger(),
             "Trajectory Bridge Started"
         );
+
+        if(!driver_.init("/dev/ttyACM0", 1000000))
+        {
+            RCLCPP_ERROR(
+                this->get_logger(),
+                "Failed to init FTServo"
+            );
+        }
+        else
+        {
+            RCLCPP_INFO(
+                this->get_logger(),
+                "FTServo initialized"
+            );
+        }
     }
 
 private:
@@ -99,6 +118,23 @@ private:
                 );
 
                 // ===== 后面这里接 FTServo =====
+                std::string joint_name = names[j];
+                double rad = point.positions[j];
+
+                int pulse = ServoMapper::radToPulse(joint_name, rad);
+
+                int servo_id = JOINT_MAP[joint_name].servo_id;
+                
+                driver_.writePosition(servo_id, pulse);
+
+                // 电机输出 Log
+                RCLCPP_INFO(
+                    this->get_logger(),
+                    "%s -> servo %d -> pulse %d",
+                    joint_name.c_str(),
+                    servo_id,
+                    pulse
+                );
             }
         }
 
@@ -108,6 +144,7 @@ private:
     );
 }
 
+    FTServoDriver driver_;
     rclcpp::Subscription<
         moveit_msgs::msg::DisplayTrajectory>::SharedPtr subscription_;
 };
