@@ -33,7 +33,7 @@ JOINT_MAP =
         "Joint_2",
         {
             6,
-            1.0385049933985793,
+            1.943553658,
             1,
             0,
             4095
@@ -87,7 +87,7 @@ JOINT_MAP =
     {
         "Joint_7",
         {
-            7,          // servo_id (assumed)
+            4,          // servo_id (assumed)
             0.0,        // offset_rad (no measurement for ID 7)
             1,  
             0,

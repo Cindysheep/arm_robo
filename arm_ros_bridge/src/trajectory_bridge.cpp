@@ -125,7 +125,7 @@ private:
 
                 int servo_id = JOINT_MAP[joint_name].servo_id;
                 
-                driver_.writePosition(servo_id, pulse);
+                driver_.writePosition(servo_id, pulse, 1500, 50);
 
                 // 电机输出 Log
                 RCLCPP_INFO(
